@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Environments
+.env
+.venv
+env/
+venv/
+
+# Deep Learning & Outputs
+outputs/
+logs/
+*.log
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# HuggingFace & DeepSpeed
+.cache/
+runs/
+
+# IDEs
+.idea/
+.vscode/
