@@ -9,6 +9,7 @@ CONFIGS=(
     "configs/bert_glue.yaml"
     "configs/electra_glue.yaml"
     "configs/deberta_glue.yaml"
+    "configs/qwen_glue.yaml" 
 )
 SEED=42
 METHODS=("fft" "static_tada" "lora" "flex_tada")

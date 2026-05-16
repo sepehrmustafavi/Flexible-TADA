@@ -1,6 +1,0 @@
-{
-    "avg_faithfulness": 0.0005930987465421133,
-    "avg_sufficiency": 0.5477837215770375,
-    "task": "cola",
-    "method": "lora"
-}

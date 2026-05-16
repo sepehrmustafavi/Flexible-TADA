@@ -1,6 +1,0 @@
-{
-    "avg_faithfulness": 0.00010710700103789376,
-    "avg_sufficiency": 0.5003170762837618,
-    "task": "qqp",
-    "method": "lora"
-}

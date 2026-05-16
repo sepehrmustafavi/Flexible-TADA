@@ -9,7 +9,7 @@
 CONFIG="configs/roberta_glue.yaml"
 # We choose SST-2 and MRPC as they are great for word-level semantic importance
 TASKS=("sst2" "mrpc") 
-METHODS=("lora" "flex_tada")
+METHODS=("fft" "static_tada" "lora" "flex_tada")
 SEED=42
 
 echo "================================================================"

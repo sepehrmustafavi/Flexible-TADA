@@ -51,7 +51,7 @@ def main():
 
     # 4. Run Evaluator
     evaluator = XAIEvaluator(model, tokenizer, device=device)
-    results = evaluator.run_analysis(test_dataloader)
+    results = evaluator.run_analysis(test_dataloader, args.task, args.method, args.output_dir)
 
     # 5. Save Results
     os.makedirs(args.output_dir, exist_ok=True)

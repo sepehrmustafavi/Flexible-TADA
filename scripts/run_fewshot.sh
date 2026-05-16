@@ -8,8 +8,7 @@
 
 # 1. Configuration
 CONFIG="configs/roberta_glue.yaml"
-METHODS=("lora" "flex_tada") # Primary comparison for the few-shot regime
-TASKS=("mnli" "rte")         # MNLI for high-resource/low-shot, RTE for low-resource
+METHODS=("fft" "static_tada" "lora" "flex_tada")TASKS=("mnli" "rte")         # MNLI for high-resource/low-shot, RTE for low-resource
 SHOTS=(10 50 100)            # Number of training samples
 SEEDS=(42 123 2026)          # Multiple seeds for mean/std-dev calculation
 

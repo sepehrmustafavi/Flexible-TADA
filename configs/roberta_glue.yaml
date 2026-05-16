@@ -53,4 +53,4 @@ methods:
 system:
   seed: 42
   fp16: true # Enable mixed precision for L40S speedup
-  report_to: "wandb" # Logging to Weights & Biases
+  report_to: "tensorboard"

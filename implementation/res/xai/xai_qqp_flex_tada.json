@@ -1,6 +1,0 @@
-{
-    "avg_faithfulness": -0.0005721405954844659,
-    "avg_sufficiency": 0.5670947757076736,
-    "task": "qqp",
-    "method": "flex_tada"
-}

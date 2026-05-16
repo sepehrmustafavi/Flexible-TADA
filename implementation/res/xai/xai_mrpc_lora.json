@@ -1,6 +1,0 @@
-{
-    "avg_faithfulness": 4.417334611599262e-07,
-    "avg_sufficiency": 0.5191405140436612,
-    "task": "mrpc",
-    "method": "lora"
-}

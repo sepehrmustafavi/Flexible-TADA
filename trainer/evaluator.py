@@ -6,7 +6,7 @@ import torch
 
 logger = logging.getLogger(__name__)
 
-def run_evaluation(trainer, eval_dataset, task_name: str, method_name: str, output_dir: str):
+def run_evaluation(trainer, eval_dataset, task_name: str, method_name: str, output_dir: str, train_metrics: dict = None):
     """
     Runs the final evaluation loop, calculates critical metrics including 
     inference latency, and dumps the results into a clean JSON file 
@@ -56,10 +56,13 @@ def run_evaluation(trainer, eval_dataset, task_name: str, method_name: str, outp
     logger.info(f"Primary Metric (e.g., Accuracy): {metrics.get('eval_accuracy', metrics.get('eval_f1', 'N/A'))}")
 
     # Step 4: Clean up and Save Results for Paper Tables
-    # We remove the 'eval_' prefix from the keys for a cleaner JSON structure
     cleaned_metrics = {k.replace("eval_", ""): v for k, v in metrics.items()}
     cleaned_metrics["task"] = task_name
     cleaned_metrics["method"] = method_name
+    
+    if train_metrics:
+        cleaned_metrics["train_runtime"] = round(train_metrics.get("train_runtime", 0.0), 2)
+        cleaned_metrics["train_samples_per_second"] = round(train_metrics.get("train_samples_per_second", 0.0), 2)
     
     # Ensure the output directory exists
     os.makedirs(output_dir, exist_ok=True)

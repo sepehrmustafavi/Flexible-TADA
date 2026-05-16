@@ -1,6 +1,0 @@
-{
-    "avg_faithfulness": -0.00010902188170406151,
-    "avg_sufficiency": 0.3540921185032164,
-    "task": "mnli",
-    "method": "lora"
-}

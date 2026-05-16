@@ -1,6 +1,0 @@
-{
-    "avg_faithfulness": -0.0004083731999764076,
-    "avg_sufficiency": 0.5367801258197198,
-    "task": "mrpc",
-    "method": "flex_tada"
-}

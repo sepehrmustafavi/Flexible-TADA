@@ -120,6 +120,9 @@ def main():
     trainer.save_model()
     logger.info(f"Training completed. Global Step: {train_result.global_step}")
 
+    # گرفتن متریک‌های زمان آموزش
+    train_metrics = train_result.metrics
+
     # 11. Execute Evaluation & Hardware Profiling
     logger.info("Starting Evaluation Phase...")
     output_dir = trainer.args.output_dir
@@ -128,7 +131,8 @@ def main():
         eval_dataset=tokenized_dataset["validation"],
         task_name=task_name,
         method_name=args.method,
-        output_dir=output_dir
+        output_dir=output_dir,
+        train_metrics=train_metrics 
     )
 
     logger.info(f"🎉 Pipeline finished successfully for {task_name.upper()} using {args.method.upper()}.")
