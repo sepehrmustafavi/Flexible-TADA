@@ -1,0 +1,12 @@
+{
+    "loss": 1.4354380369186401,
+    "accuracy": 0.6504702194357367,
+    "runtime": 7.8546,
+    "samples_per_second": 81.226,
+    "steps_per_second": 10.185,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 12.3165,
+    "total_samples": 638,
+    "task": "wic",
+    "method": "static_tada"
+}

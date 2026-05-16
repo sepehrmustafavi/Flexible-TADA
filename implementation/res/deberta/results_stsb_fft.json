@@ -1,0 +1,13 @@
+{
+    "loss": 0.41302743554115295,
+    "pearson": 0.9107796549797058,
+    "spearman": 0.908591515900781,
+    "runtime": 0.9721,
+    "samples_per_second": 1543.126,
+    "steps_per_second": 48.351,
+    "epoch": 6.0,
+    "latency_per_sample_ms": 0.6497,
+    "total_samples": 1500,
+    "task": "stsb",
+    "method": "fft"
+}

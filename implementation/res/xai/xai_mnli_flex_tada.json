@@ -1,0 +1,6 @@
+{
+    "avg_faithfulness": 0.00014935047731655938,
+    "avg_sufficiency": 0.3665565048444543,
+    "task": "mnli",
+    "method": "flex_tada"
+}

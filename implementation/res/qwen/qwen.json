@@ -1,0 +1,98 @@
+{
+    "results_wic_fft": {
+        "loss": 2.380082130432129,
+        "accuracy": 0.7288401253918495,
+        "runtime": 7.2862,
+        "samples_per_second": 87.563,
+        "steps_per_second": 10.98,
+        "epoch": 5.0,
+        "latency_per_sample_ms": 11.4245,
+        "total_samples": 638,
+        "task": "wic",
+        "method": "fft"
+    },
+    "results_boolq_flex_tada": {
+        "loss": 0.9399721622467041,
+        "accuracy": 0.6730886850152905,
+        "runtime": 111.7496,
+        "samples_per_second": 29.262,
+        "steps_per_second": 3.66,
+        "epoch": 4.0,
+        "latency_per_sample_ms": 34.1751,
+        "total_samples": 3270,
+        "task": "boolq",
+        "method": "flex_tada"
+    },
+    "results_wic_flex_tada": {
+        "loss": 1.3234632015228271,
+        "accuracy": 0.6927899686520376,
+        "runtime": 7.1263,
+        "samples_per_second": 89.528,
+        "steps_per_second": 11.226,
+        "epoch": 5.0,
+        "latency_per_sample_ms": 11.1749,
+        "total_samples": 638,
+        "task": "wic",
+        "method": "flex_tada"
+    },
+    "results_boolq_fft": {
+        "loss": 1.2991899251937866,
+        "accuracy": 0.8529051987767584,
+        "runtime": 116.0179,
+        "samples_per_second": 28.185,
+        "steps_per_second": 3.525,
+        "epoch": 5.0,
+        "latency_per_sample_ms": 35.4802,
+        "total_samples": 3270,
+        "task": "boolq",
+        "method": "fft"
+    },
+    "results_boolq_static_tada": {
+        "loss": 0.8492066264152527,
+        "accuracy": 0.6568807339449542,
+        "runtime": 111.1089,
+        "samples_per_second": 29.431,
+        "steps_per_second": 3.681,
+        "epoch": 4.0,
+        "latency_per_sample_ms": 33.9795,
+        "total_samples": 3270,
+        "task": "boolq",
+        "method": "static_tada"
+    },
+    "results_wic_static_tada": {
+        "loss": 1.4354380369186401,
+        "accuracy": 0.6504702194357367,
+        "runtime": 7.8546,
+        "samples_per_second": 81.226,
+        "steps_per_second": 10.185,
+        "epoch": 5.0,
+        "latency_per_sample_ms": 12.3165,
+        "total_samples": 638,
+        "task": "wic",
+        "method": "static_tada"
+    },
+    "results_boolq_lora": {
+        "loss": 0.34438931941986084,
+        "accuracy": 0.8568807339449541,
+        "runtime": 112.6358,
+        "samples_per_second": 29.032,
+        "steps_per_second": 3.631,
+        "epoch": 5.0,
+        "latency_per_sample_ms": 34.4464,
+        "total_samples": 3270,
+        "task": "boolq",
+        "method": "lora"
+    },
+    "results_wic_lora": {
+        "loss": 0.5635544061660767,
+        "accuracy": 0.7288401253918495,
+        "runtime": 7.6334,
+        "samples_per_second": 83.58,
+        "steps_per_second": 10.48,
+        "epoch": 5.0,
+        "latency_per_sample_ms": 11.9702,
+        "total_samples": 638,
+        "task": "wic",
+        "method": "lora"
+    }
+}

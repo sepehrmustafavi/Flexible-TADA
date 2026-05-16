@@ -1,0 +1,6 @@
+{
+    "avg_faithfulness": 0.0010741344956455357,
+    "avg_sufficiency": 0.5842547118663788,
+    "task": "cola",
+    "method": "flex_tada"
+}

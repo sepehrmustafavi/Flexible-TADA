@@ -1,0 +1,13 @@
+{
+    "loss": 0.559054434299469,
+    "pearson": 0.8744611144065857,
+    "spearman": 0.8711234687246735,
+    "runtime": 0.6781,
+    "samples_per_second": 2212.197,
+    "steps_per_second": 69.316,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 0.4535,
+    "total_samples": 1500,
+    "task": "stsb",
+    "method": "flex_tada"
+}

@@ -1,0 +1,6 @@
+{
+    "avg_faithfulness": -0.0002834364545139435,
+    "avg_sufficiency": 0.5260213299801475,
+    "task": "qnli",
+    "method": "lora"
+}

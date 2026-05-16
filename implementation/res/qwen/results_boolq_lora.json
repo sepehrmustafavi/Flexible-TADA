@@ -1,0 +1,12 @@
+{
+    "loss": 0.34438931941986084,
+    "accuracy": 0.8568807339449541,
+    "runtime": 112.6358,
+    "samples_per_second": 29.032,
+    "steps_per_second": 3.631,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 34.4464,
+    "total_samples": 3270,
+    "task": "boolq",
+    "method": "lora"
+}

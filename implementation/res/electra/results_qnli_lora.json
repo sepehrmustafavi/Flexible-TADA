@@ -1,0 +1,12 @@
+{
+    "loss": 0.1994570791721344,
+    "accuracy": 0.9302580999450851,
+    "runtime": 4.5567,
+    "samples_per_second": 1198.895,
+    "steps_per_second": 37.527,
+    "epoch": 7.0,
+    "latency_per_sample_ms": 0.8346,
+    "total_samples": 5463,
+    "task": "qnli",
+    "method": "lora"
+}

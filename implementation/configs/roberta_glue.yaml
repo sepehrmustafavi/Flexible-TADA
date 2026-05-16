@@ -1,0 +1,56 @@
+# Model Configuration
+model:
+  model_name_or_path: "roberta-base"
+  tokenizer_name: "roberta-base"
+  max_seq_length: 128 # Standard for GLUE evaluation to match LoRA/Adapter baselines
+
+# Dataset Configuration
+dataset:
+  benchmark: "glue"
+  # Tasks to be executed: mnli, sst2, mrpc, cola, qnli, qqp, rte, stsb
+  tasks: ["mnli", "sst2", "mrpc", "cola", "qnli", "qqp", "rte", "stsb"]
+  validation_split: "validation"
+
+# Global Training Hyperparameters (Standard for RoBERTa)
+training:
+  optimizer: "adamw"
+  lr_scheduler_type: "linear"
+  warmup_ratio: 0.06
+  weight_decay: 0.1
+  per_device_train_batch_size: 32
+  per_device_eval_batch_size: 32
+  num_train_epochs: 10 # Base epochs, can be overridden per task
+  logging_steps: 100
+  evaluation_strategy: "epoch"
+  save_strategy: "epoch"
+  load_best_model_at_end: true
+
+# Method-Specific Configurations
+methods:
+  # Full Fine-Tuning
+  fft:
+    learning_rate: 2e-5 # Standard FFT learning rate for RoBERTa
+
+  # Low-Rank Adaptation
+  lora:
+    learning_rate: 4e-4 # Optimized LR for LoRA on RoBERTa
+    r: 8
+    lora_alpha: 16
+    target_modules: ["query", "value"] # Apply LoRA to Q and V matrices
+    lora_dropout: 0.1
+
+  # Static TADA (Baseline)
+  static_tada:
+    learning_rate: 5e-4 # Typically higher LR needed for embedding-only tuning
+    trainable_layers: ["embeddings"]
+
+  # Our Proposed Method: Flexible TADA
+  flex_tada:
+    learning_rate: 3e-4 # Balanced LR for joint embedding and last-layer tuning
+    trainable_layers: ["embeddings", "encoder.layer.11"] # Unfreeze Embeddings + Last Layer
+
+# Hardware & Reporting
+system:
+  seed: 42
+  fp16: true # Enable mixed precision for L40S speedup
+  report_to: "tensorboard"

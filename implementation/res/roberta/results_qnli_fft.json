@@ -1,0 +1,12 @@
+{
+    "loss": 0.2207280546426773,
+    "accuracy": 0.9189090243455976,
+    "runtime": 4.4543,
+    "samples_per_second": 1226.467,
+    "steps_per_second": 38.39,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 0.8158,
+    "total_samples": 5463,
+    "task": "qnli",
+    "method": "fft"
+}

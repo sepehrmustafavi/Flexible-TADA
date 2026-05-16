@@ -1,0 +1,12 @@
+{
+    "loss": 2.380082130432129,
+    "accuracy": 0.7288401253918495,
+    "runtime": 7.2862,
+    "samples_per_second": 87.563,
+    "steps_per_second": 10.98,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 11.4245,
+    "total_samples": 638,
+    "task": "wic",
+    "method": "fft"
+}

@@ -1,0 +1,12 @@
+{
+    "loss": 0.14891111850738525,
+    "accuracy": 0.9552752293577982,
+    "runtime": 0.5719,
+    "samples_per_second": 1524.807,
+    "steps_per_second": 48.962,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 0.6585,
+    "total_samples": 872,
+    "task": "sst2",
+    "method": "fft"
+}

@@ -1,0 +1,12 @@
+{
+    "loss": 0.34059712290763855,
+    "accuracy": 0.8522789676002197,
+    "runtime": 4.7824,
+    "samples_per_second": 1142.302,
+    "steps_per_second": 35.756,
+    "epoch": 4.0,
+    "latency_per_sample_ms": 0.8759,
+    "total_samples": 5463,
+    "task": "qnli",
+    "method": "flex_tada"
+}

@@ -1,0 +1,12 @@
+{
+    "loss": 0.3498893082141876,
+    "mcc": 0.6654570986158919,
+    "runtime": 0.2976,
+    "samples_per_second": 3505.136,
+    "steps_per_second": 110.901,
+    "epoch": 6.0,
+    "latency_per_sample_ms": 0.2878,
+    "total_samples": 1043,
+    "task": "cola",
+    "method": "lora"
+}

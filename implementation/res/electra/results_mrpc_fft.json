@@ -1,0 +1,13 @@
+{
+    "loss": 0.30122727155685425,
+    "accuracy": 0.875,
+    "f1": 0.9097345132743363,
+    "runtime": 0.2496,
+    "samples_per_second": 1634.606,
+    "steps_per_second": 52.083,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 0.6178,
+    "total_samples": 408,
+    "task": "mrpc",
+    "method": "fft"
+}

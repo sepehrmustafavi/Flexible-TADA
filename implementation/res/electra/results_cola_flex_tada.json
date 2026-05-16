@@ -1,0 +1,12 @@
+{
+    "loss": 0.3598051965236664,
+    "mcc": 0.6181253608052198,
+    "runtime": 0.2508,
+    "samples_per_second": 4158.433,
+    "steps_per_second": 131.571,
+    "epoch": 4.0,
+    "latency_per_sample_ms": 0.2427,
+    "total_samples": 1043,
+    "task": "cola",
+    "method": "flex_tada"
+}

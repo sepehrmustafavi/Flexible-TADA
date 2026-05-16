@@ -1,0 +1,6 @@
+{
+    "avg_faithfulness": 6.875090978362344e-05,
+    "avg_sufficiency": 0.5442792036316612,
+    "task": "sst2",
+    "method": "lora"
+}

@@ -1,0 +1,12 @@
+{
+    "loss": 0.6163530349731445,
+    "accuracy": 0.7494651044319919,
+    "runtime": 10.0319,
+    "samples_per_second": 978.38,
+    "steps_per_second": 30.602,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 1.0224,
+    "total_samples": 9815,
+    "task": "mnli",
+    "method": "static_tada"
+}

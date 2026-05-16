@@ -1,0 +1,13 @@
+{
+    "loss": 0.6020169258117676,
+    "accuracy": 0.7132352941176471,
+    "f1": 0.8115942028985508,
+    "runtime": 0.2798,
+    "samples_per_second": 1458.218,
+    "steps_per_second": 46.463,
+    "epoch": 4.0,
+    "latency_per_sample_ms": 0.6915,
+    "total_samples": 408,
+    "task": "mrpc",
+    "method": "static_tada"
+}

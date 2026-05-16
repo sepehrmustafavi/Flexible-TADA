@@ -1,0 +1,13 @@
+{
+    "loss": 0.398152619600296,
+    "pearson": 0.9111496806144714,
+    "spearman": 0.9113445177982099,
+    "runtime": 0.6635,
+    "samples_per_second": 2260.658,
+    "steps_per_second": 70.834,
+    "epoch": 10.0,
+    "latency_per_sample_ms": 0.4439,
+    "total_samples": 1500,
+    "task": "stsb",
+    "method": "lora"
+}

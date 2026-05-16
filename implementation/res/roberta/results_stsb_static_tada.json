@@ -1,0 +1,13 @@
+{
+    "loss": 0.876082181930542,
+    "pearson": 0.809642493724823,
+    "spearman": 0.8106946619512683,
+    "runtime": 0.64,
+    "samples_per_second": 2343.883,
+    "steps_per_second": 73.442,
+    "epoch": 9.0,
+    "latency_per_sample_ms": 0.4282,
+    "total_samples": 1500,
+    "task": "stsb",
+    "method": "static_tada"
+}

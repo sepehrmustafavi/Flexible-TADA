@@ -1,0 +1,13 @@
+{
+    "loss": 0.3534236252307892,
+    "accuracy": 0.8433836260202819,
+    "f1": 0.7915185038851574,
+    "runtime": 24.5906,
+    "samples_per_second": 1644.124,
+    "steps_per_second": 51.402,
+    "epoch": 6.0,
+    "latency_per_sample_ms": 0.6083,
+    "total_samples": 40430,
+    "task": "qqp",
+    "method": "static_tada"
+}

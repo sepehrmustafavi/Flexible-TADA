@@ -1,0 +1,13 @@
+{
+    "loss": 0.21230965852737427,
+    "accuracy": 0.9186989859015583,
+    "f1": 0.8923741855211028,
+    "runtime": 33.4565,
+    "samples_per_second": 1208.434,
+    "steps_per_second": 37.78,
+    "epoch": 5.0,
+    "latency_per_sample_ms": 0.8276,
+    "total_samples": 40430,
+    "task": "qqp",
+    "method": "fft"
+}

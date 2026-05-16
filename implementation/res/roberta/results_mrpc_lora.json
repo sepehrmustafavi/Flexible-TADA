@@ -1,0 +1,13 @@
+{
+    "loss": 0.3070114254951477,
+    "accuracy": 0.8676470588235294,
+    "f1": 0.9042553191489362,
+    "runtime": 0.2698,
+    "samples_per_second": 1512.254,
+    "steps_per_second": 48.185,
+    "epoch": 9.0,
+    "latency_per_sample_ms": 0.6672,
+    "total_samples": 408,
+    "task": "mrpc",
+    "method": "lora"
+}

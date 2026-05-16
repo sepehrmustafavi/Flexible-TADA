@@ -1,0 +1,12 @@
+{
+    "loss": 1.0992927551269531,
+    "accuracy": 0.3544574630667346,
+    "runtime": 7.062,
+    "samples_per_second": 1389.83,
+    "steps_per_second": 43.472,
+    "epoch": 4.0,
+    "latency_per_sample_ms": 0.7198,
+    "total_samples": 9815,
+    "task": "mnli",
+    "method": "lora"
+}

@@ -1,0 +1,13 @@
+{
+    "loss": 0.23792415857315063,
+    "accuracy": 0.8984417511748701,
+    "f1": 0.8658169934640523,
+    "runtime": 23.6206,
+    "samples_per_second": 1711.639,
+    "steps_per_second": 53.513,
+    "epoch": 7.0,
+    "latency_per_sample_ms": 0.5843,
+    "total_samples": 40430,
+    "task": "qqp",
+    "method": "lora"
+}

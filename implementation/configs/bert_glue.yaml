@@ -1,0 +1,51 @@
+# Model Configuration
+model:
+  model_name_or_path: "bert-base-uncased"
+  tokenizer_name: "bert-base-uncased"
+  max_seq_length: 128
+
+# Dataset Configuration
+dataset:
+  benchmark: "glue"
+  tasks: ["mnli", "sst2", "mrpc", "cola", "qnli", "qqp", "rte", "stsb"]
+  validation_split: "validation"
+
+# Global Training Hyperparameters
+training:
+  optimizer: "adamw"
+  lr_scheduler_type: "linear"
+  warmup_ratio: 0.06
+  weight_decay: 0.1
+  per_device_train_batch_size: 32
+  per_device_eval_batch_size: 32
+  num_train_epochs: 10
+  logging_steps: 100
+  evaluation_strategy: "epoch"
+  save_strategy: "epoch"
+  load_best_model_at_end: true
+
+# Method-Specific Configurations
+methods:
+  fft:
+    learning_rate: 2e-5
+
+  lora:
+    learning_rate: 4e-4
+    r: 8
+    lora_alpha: 16
+    target_modules: ["query", "value"] 
+    lora_dropout: 0.1
+
+  static_tada:
+    learning_rate: 5e-4
+    trainable_layers: ["embeddings"]
+
+  flex_tada:
+    learning_rate: 3e-4
+    trainable_layers: ["embeddings", "encoder.layer.11"] 
+
+# Hardware & Reporting
+system:
+  seed: 42
+  fp16: true 
+  report_to: "tensorboard"
