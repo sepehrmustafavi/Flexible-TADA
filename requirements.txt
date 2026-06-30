@@ -1,0 +1,34 @@
+# ==========================================
+# Core Deep Learning & Tensor Operations
+# ==========================================
+torch>=2.1.2        # Core framework (includes optimizations for modern GPUs like L40S)
+numpy>=1.24.0       # Standard array operations
+
+# ==========================================
+# HuggingFace Ecosystem (Models, Data, PEFT)
+# ==========================================
+transformers>=4.46.0 # Updated to support eval_strategy and processing_class
+datasets>=2.18.0     # For loading GLUE and SuperGLUE seamlessly
+peft>=0.10.0         # HF library for our LoRA baseline implementations
+accelerate>=0.28.0   # Essential for HF Trainer, multi-GPU, and mixed precision (fp16/bf16)
+
+# ==========================================
+# Memory Optimization & Fast Inference
+# ==========================================
+deepspeed>=0.14.0    # Microsoft's library for ZeRO-2 VRAM partitioning
+flash-attn>=2.5.6    # Optional but HIGHLY recommended for L40S to double Qwen2 speed
+
+# ==========================================
+# Evaluation, XAI & Visualization
+# ==========================================
+scikit-learn>=1.3.0  # For Accuracy, F1-Macro, and MCC (Matthews Correlation Coefficient)
+scipy>=1.11.0        # For Pearson and Spearman correlations (STS-B task)
+captum>=0.7.0        # PyTorch library for Integrated Gradients (XAI evaluation)
+matplotlib>=3.7.0    # For generating Token Importance Heatmaps
+seaborn>=0.12.0      # For advanced heatmap styling and visualization
+
+# ==========================================
+# Utilities & Configuration
+# ==========================================
+PyYAML>=6.0.1        # For parsing our modular config (.yaml) files
+tensorboard>=2.15.0  # For local training logging, metrics, and loss tracking

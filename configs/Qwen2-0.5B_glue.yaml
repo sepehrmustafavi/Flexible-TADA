@@ -1,0 +1,57 @@
+# Model Configuration
+model:
+  model_name_or_path: "Qwen/Qwen2-0.5B"
+  tokenizer_name: "Qwen/Qwen2-0.5B"
+  max_seq_length: 512
+  trust_remote_code: true
+
+# Dataset Configuration
+dataset:
+  benchmark: "glue"
+  tasks: ["mnli", "sst2", "mrpc", "cola", "qnli", "qqp", "rte", "stsb"]
+  validation_split: "validation"
+
+# Training Hyperparameters for LLMs
+training:
+  optimizer: "adamw"
+  lr_scheduler_type: "linear"
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 4
+  num_train_epochs: 5
+  logging_steps: 50
+  evaluation_strategy: "epoch"
+  eval_steps: 500
+  save_strategy: "epoch"
+  save_total_limit: 1
+  load_best_model_at_end: true
+  gradient_checkpointing: true
+
+# Method-Specific Configurations
+methods:
+  fft:
+    learning_rate: 1e-5
+
+  lora:
+    learning_rate: 1e-4
+    r: 16
+    lora_alpha: 32
+    target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"]
+    lora_dropout: 0.05
+
+  static_tada:
+    learning_rate: 2e-4
+    trainable_layers: ["model.embed_tokens"]
+
+  flex_tada:
+    learning_rate: 3e-4
+    trainable_layers: ["model.embed_tokens", "model.layers.23"]
+
+# Hardware & Reporting
+system:
+  seed: 42
+  fp16: False
+  report_to: "tensorboard"
+  save_final_model: false
