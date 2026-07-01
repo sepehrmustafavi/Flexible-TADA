@@ -3,7 +3,6 @@ import torch
 from transformers import AutoModelForSequenceClassification, AutoConfig
 from peft import get_peft_model, LoraConfig, TaskType
 
-# We will implement these two functions in the next steps
 from .flex_tada import apply_flexible_tada
 from .baselines import apply_static_tada
 
