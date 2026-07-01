@@ -7,7 +7,7 @@
 # and tracks how the representation depth affects the task performance.
 
 CONFIG="configs/roberta_glue.yaml"
-TASK="sst2" # We use SST-2 because it's fast and sensitive to semantic changes
+TASK="sst2"     # We use SST-2 because it's fast and sensitive to semantic changes
 METHOD="flex_tada"
 SEED=42
 
