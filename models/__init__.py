@@ -10,5 +10,4 @@ This package contains the core logic for dynamically unfreezing specific layers
 
 from .model_factory import get_model
 
-# Define what gets imported when a user runs `from models import *`
 __all__ = ["get_model"]
