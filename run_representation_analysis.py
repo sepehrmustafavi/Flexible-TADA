@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-"""
-Representation Collapse Analysis Script (CKA)
-This script extracts the hidden states of the FFT, Static TADA, and Flexible TADA models
-and calculates the layer-wise Centered Kernel Alignment (CKA) to mathematically prove
-the hypothesis of representation collapse in standard PEFT methods.
-"""
 import os
 import json
 import glob
@@ -31,13 +24,11 @@ def find_latest_checkpoint(base_dir):
 def main():
     print("🚀 Starting Representation Analysis (CKA)...")
     
-    # ---------------------------------------------------------
     # Configuration Settings
-    # ---------------------------------------------------------
     config_path = "configs/roberta_glue.yaml"
-    task = "sst2"  # Using SST-2 or MNLI is highly recommended for reasoning tasks
+    task = "sst2"       # Using SST-2 or MNLI is highly recommended for reasoning tasks
     seed = 42
-    num_samples = 256  # A batch of 256 is statistically robust for CKA calculation
+    num_samples = 256   # A batch of 256 is statistically robust for CKA calculation
 
     # 1. Load Config & Setup Device
     with open(config_path, "r") as f:
@@ -55,7 +46,7 @@ def main():
     processor = FlexibleTADADataProcessor(tokenizer, max_seq_length=128)
     tokenized_dataset = processor.prepare_dataset(raw_dataset, task)
     
-    # We use a single batch equal to num_samples for robust CKA matrix computation
+    # use a single batch equal to num_samples for robust CKA matrix computation
     val_subset = tokenized_dataset["validation"].select(range(min(num_samples, len(tokenized_dataset["validation"]))))
     dataloader = DataLoader(
         val_subset, 
