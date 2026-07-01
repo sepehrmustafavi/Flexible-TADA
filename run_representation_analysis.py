@@ -13,7 +13,21 @@ from data.dataset_builder import FlexibleTADADatasetBuilder
 from data.data_utils import FlexibleTADADataProcessor
 
 def find_latest_checkpoint(base_dir):
-    """Helper function to find the latest HuggingFace Trainer checkpoint."""
+    """
+    Finds the most recent HuggingFace Trainer checkpoint.
+
+    This function searches the specified model directory for checkpoint
+    folders, identifies the checkpoint with the highest training step,
+    and returns its path. If no checkpoint directories are found, the
+    base directory is returned instead.
+
+    Args:
+        base_dir (str): Directory containing the model checkpoints.
+
+    Returns:
+        str: Path to the latest checkpoint or the base directory if no
+        checkpoints exist.
+    """
     checkpoints = glob.glob(os.path.join(base_dir, "checkpoint-*"))
     if not checkpoints:
         return base_dir # Fallback to the base directory if no checkpoint folders exist
@@ -22,6 +36,18 @@ def find_latest_checkpoint(base_dir):
     return checkpoints[-1]
 
 def main():
+    """
+    Performs layer-wise representation analysis using Linear CKA.
+
+    This script loads trained models produced by different fine-tuning
+    methods, extracts their hidden representations on a validation dataset,
+    computes layer-wise Linear CKA similarity against a Fully Fine-Tuned
+    reference model, and saves the resulting representation similarity
+    scores for quantitative analysis.
+
+    Returns:
+        None
+    """
     print("🚀 Starting Representation Analysis (CKA)...")
     
     # Configuration Settings
@@ -56,6 +82,20 @@ def main():
 
     # Helper function to initialize and load trained models
     def load_trained_model(method):
+        """
+        Loads a trained model for the specified fine-tuning method.
+
+        This helper function initializes the appropriate model architecture,
+        loads the latest available checkpoint, restores the trained weights,
+        and prepares the model for evaluation.
+
+        Args:
+            method (str): Name of the fine-tuning method (e.g., "fft",
+                "static_tada", or "flex_tada").
+
+        Returns:
+            torch.nn.Module: The trained model loaded onto the target device.
+        """
         print(f"📦 Loading {method.upper()} model...")
         model_dir = f"outputs/{task}_{method}_{seed}"
         ckpt_dir = find_latest_checkpoint(model_dir)
