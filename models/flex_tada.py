@@ -6,6 +6,23 @@ logger = logging.getLogger(__name__)
 def apply_flexible_tada(model: torch.nn.Module, trainable_layers: list) -> torch.nn.Module:
     """
     Applies the Flexible TADA methodology to a pre-trained Transformer model.
+
+    Unlike Static TADA, Flexible TADA selectively unfreezes user-specified
+    Transformer layers while keeping the remaining backbone frozen. The method
+    also supports dynamic resolution of the final encoder layer across different
+    Transformer architectures (e.g., BERT, RoBERTa, DeBERTa, Qwen, and LLaMA)
+    and always ensures that the task-specific prediction head remains trainable.
+
+    Args:
+        model (torch.nn.Module): The instantiated HuggingFace Transformer model.
+        trainable_layers (list): List of layer keywords or special identifiers
+            (e.g., ["embeddings"], ["last_layer"], or
+            ["embeddings", "last_layer"]) that specify which parameters
+            should remain trainable.
+
+    Returns:
+        torch.nn.Module: The modified model with updated requires_grad
+        attributes according to the Flexible TADA configuration.
     """
     trainable_layers = trainable_layers.copy()
     if not trainable_layers:
