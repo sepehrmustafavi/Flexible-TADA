@@ -7,13 +7,25 @@ logger = logging.getLogger(__name__)
 
 class HardwareProfiler:
     """
-    A utility class for measuring Peak VRAM usage and Inference Latency.
-    Crucial for extracting "Green AI" metrics for research papers (e.g., Table 4).
+    Profiles hardware performance during model execution.
+
+    This utility class measures GPU memory consumption and inference latency
+    for Transformer models. It provides reproducible hardware efficiency
+    metrics that can be used to compare different fine-tuning methods in
+    terms of computational cost and Green AI performance.
     """
 
-    @staticmethod
     def reset_memory_stats():
-        """Resets the PyTorch CUDA memory allocator statistics."""
+        """
+        Resets the CUDA memory profiling statistics.
+
+        This method clears the CUDA memory cache and resets the peak memory
+        allocator statistics, allowing subsequent GPU memory measurements to
+        reflect only the operations performed after the reset.
+
+        Returns:
+            None
+        """
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             torch.cuda.reset_peak_memory_stats()
@@ -21,10 +33,16 @@ class HardwareProfiler:
         else:
             logger.warning("CUDA is not available. Memory profiling will not work.")
 
-    @staticmethod
     def get_peak_vram_mb() -> float:
         """
-        Returns the peak VRAM used since the last reset, in Megabytes.
+        Retrieves the peak GPU memory usage since the last reset.
+
+        The reported value corresponds to the maximum amount of allocated CUDA
+        memory observed after calling reset_memory_stats() and is returned in
+        megabytes.
+
+        Returns:
+            float: Peak VRAM usage in megabytes (MB).
         """
         if torch.cuda.is_available():
             peak_bytes = torch.cuda.max_memory_allocated()
@@ -32,15 +50,20 @@ class HardwareProfiler:
             return round(peak_mb, 2)
         return 0.0
 
-    @staticmethod
-    @contextmanager
     def track_vram_usage(operation_name: str = "Operation"):
         """
-        A context manager to easily track VRAM usage of a specific block of code.
-        
-        Usage:
-            with HardwareProfiler.track_vram_usage("Model Forward Pass"):
-                outputs = model(inputs)
+        Measures the peak GPU memory usage of a code block.
+
+        This context manager automatically resets the CUDA memory statistics
+        before execution and reports the peak VRAM consumption after the
+        enclosed operation completes.
+
+        Args:
+            operation_name (str): Descriptive name of the operation being
+                profiled.
+
+        Returns:
+            None
         """
         HardwareProfiler.reset_memory_stats()
         try:
@@ -49,7 +72,6 @@ class HardwareProfiler:
             peak_mb = HardwareProfiler.get_peak_vram_mb()
             logger.info(f"[VRAM Profiler] {operation_name} Peak VRAM: {peak_mb} MB")
 
-    @staticmethod
     def measure_inference_latency(model, dummy_dataloader, device, num_batches=10):
         """
         Measures the exact inference latency per sample.
