@@ -63,7 +63,7 @@ def build_trainer(
         
         # Hardware & Precision (L40S Optimizations)
         fp16=sys_config.get("fp16", False),
-        bf16=sys_config.get("bf16", False), # If L40S supports bf16, use it!
+        bf16=sys_config.get("bf16", False),
         seed=sys_config.get("seed", 42),
         
         # Evaluation & Saving Strategies
@@ -72,7 +72,7 @@ def build_trainer(
         eval_steps=train_config.get("eval_steps", None),
         save_steps=train_config.get("save_steps", None),
         load_best_model_at_end=train_config.get("load_best_model_at_end", True),
-        metric_for_best_model="eval_loss", # We track loss to prevent over-fitting
+        metric_for_best_model="eval_loss",
         greater_is_better=False,
         
         # Logging
@@ -94,7 +94,6 @@ def build_trainer(
         processing_class=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics_fn,
-        # Adding Early Stopping to prevent overfitting (especially critical in Few-Shot scenario)
         callbacks=[EarlyStoppingCallback(early_stopping_patience=3)]
     )
 
