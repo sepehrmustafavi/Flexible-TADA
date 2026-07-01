@@ -5,8 +5,12 @@ logger = logging.getLogger(__name__)
 
 class FlexibleTADADatasetBuilder:
     """
-    A unified dataset builder for loading GLUE benchmark,
-    with built-in support for Few-Shot sampling based on random seeds.
+    Loads and prepares GLUE benchmark datasets for model training.
+
+    This class provides a unified interface for loading individual GLUE
+    benchmark tasks from the HuggingFace Datasets library. It also supports
+    reproducible Few-Shot learning by randomly sampling a fixed number of
+    training examples using a user-defined random seed.
     """
     
     # Supported tasks mappings
@@ -14,16 +18,17 @@ class FlexibleTADADatasetBuilder:
 
     def __init__(self, config: dict):
         """
-        Initializes the dataset builder.
+        Initializes the dataset builder using the experiment configuration.
+
+        The configuration specifies the benchmark to load, the tasks to process,
+        the validation split to use, and the random seed for reproducible
+        Few-Shot sampling.
 
         Args:
-            config (dict): Configuration dictionary containing benchmark,
-                task list, validation split, and system settings.
+            config (dict): Dictionary containing dataset and experiment
+                configuration parameters.
 
-        Inputs:
-            Configuration dictionary.
-
-        Outputs:
+        Returns:
             None
         """
         self.benchmark = config.get("benchmark", "glue").lower()
@@ -33,18 +38,22 @@ class FlexibleTADADatasetBuilder:
 
     def load_task(self, task_name: str, num_train_samples: int = None) -> DatasetDict:
         """
-        Loads a GLUE task and optionally applies few-shot sampling.
+        Loads a specified GLUE task and optionally applies Few-Shot sampling.
+
+        The method downloads the requested dataset from the HuggingFace Datasets
+        library, extracts the training and validation splits, handles special
+        cases such as MNLI's matched validation set, and optionally reduces the
+        training set to a fixed number of randomly sampled examples.
 
         Args:
-            task_name (str): Name of the GLUE task.
-            num_train_samples (int, optional): Number of training samples
-                to retain for few-shot learning.
+            task_name (str): Name of the GLUE task to load.
+            num_train_samples (int, optional): Number of training samples to
+                retain for Few-Shot learning. If None, the full training set is
+                used.
 
-        Inputs:
-            Task name and optional number of training samples.
-
-        Outputs:
-            DatasetDict: Dataset containing train and validation splits.
+        Returns:
+            DatasetDict: A HuggingFace DatasetDict containing the processed
+            training and validation splits.
         """
         task_name = task_name.lower()
         
@@ -89,17 +98,19 @@ class FlexibleTADADatasetBuilder:
 
     def get_all_tasks(self, num_train_samples: int = None) -> dict:
         """
-        Loads all tasks specified in the configuration.
+        Loads all tasks specified in the experiment configuration.
+
+        This method iterates over every configured task, loads its corresponding
+        dataset, optionally applies Few-Shot sampling, and stores the processed
+        datasets in a dictionary indexed by task name.
 
         Args:
-            num_train_samples (int, optional): Number of training samples
-                to retain for each task.
+            num_train_samples (int, optional): Number of training samples to
+                retain for each task. If None, the complete training set is used.
 
-        Inputs:
-            Optional few-shot sample size.
-
-        Outputs:
-            dict: Dictionary mapping task names to DatasetDict objects.
+        Returns:
+            dict: A dictionary mapping each task name to its corresponding
+            processed DatasetDict.
         """
         all_datasets = {}
         for task in self.tasks:
