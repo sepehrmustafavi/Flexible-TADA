@@ -17,27 +17,25 @@ TASK_TO_KEYS = {
 
 class FlexibleTADADataProcessor:
     """
-    Handles dataset preprocessing for encoder-based transformer models.
+    Performs dataset preprocessing for encoder-based Transformer models.
 
-    Responsibilities:
-    - Tokenize input text.
-    - Apply sequence truncation.
-    - Preserve labels for training.
-    - Dynamically pad batches during data loading.
+    This class is responsible for converting raw GLUE dataset examples into
+    tokenized inputs that are compatible with HuggingFace Trainer. It handles
+    task-specific text extraction, sequence tokenization, dynamic padding,
+    truncation, and label formatting for downstream training and evaluation.
     """
 
     def __init__(self, tokenizer, max_seq_length: int = 128):
         """
-        Initializes the data processor.
+        Initializes the data processor with the tokenizer and preprocessing settings.
 
         Args:
-            tokenizer: HuggingFace tokenizer used for tokenization.
+            tokenizer (PreTrainedTokenizer): HuggingFace tokenizer used to encode
+                input text into token IDs.
             max_seq_length (int): Maximum sequence length after tokenization.
+                Input sequences longer than this value are truncated.
 
-        Inputs:
-            tokenizer, max_seq_length
-
-        Outputs:
+        Returns:
             None
         """
         self.tokenizer = tokenizer
@@ -45,17 +43,22 @@ class FlexibleTADADataProcessor:
 
     def preprocess_function(self, examples, task_name: str):
         """
-        Tokenizes dataset examples for a specified GLUE task.
+        Tokenizes a batch of dataset examples for a specified GLUE task.
+
+        This method automatically selects the appropriate input text columns
+        based on the task, performs tokenization with truncation, and renames
+        the dataset labels to the "labels" field expected by the HuggingFace
+        Trainer API.
 
         Args:
-            examples (dict): Batch of dataset examples.
-            task_name (str): Name of the GLUE task.
+            examples (dict): A batch of dataset examples provided by the
+                HuggingFace Dataset object.
+            task_name (str): Name of the GLUE task used to determine the
+                corresponding input text columns.
 
-        Inputs:
-            Dataset examples and task name.
-
-        Outputs:
-            dict: Tokenized inputs with labels (if available).
+        Returns:
+            dict: A dictionary containing tokenized inputs and labels
+            formatted for model training.
         """
         task_name = task_name.lower()
         if task_name not in TASK_TO_KEYS:
@@ -84,17 +87,19 @@ class FlexibleTADADataProcessor:
 
     def prepare_dataset(self, dataset_dict, task_name: str):
         """
-        Applies tokenization to all splits in the dataset.
+        Applies tokenization to all dataset splits for a specified GLUE task.
+
+        This method maps the preprocessing function over every split in the
+        dataset, removes the original text columns after tokenization, and
+        returns a fully processed DatasetDict ready for model training.
 
         Args:
-            dataset_dict (DatasetDict): Dataset containing train/validation/test splits.
-            task_name (str): Name of the GLUE task.
+            dataset_dict (DatasetDict): HuggingFace DatasetDict containing
+                the dataset splits.
+            task_name (str): Name of the GLUE task being processed.
 
-        Inputs:
-            DatasetDict and task name.
-
-        Outputs:
-            DatasetDict: Tokenized dataset.
+        Returns:
+            DatasetDict: The tokenized dataset with original text columns removed.
         """
         logger.info(f"Tokenizing dataset for task: {task_name}...")
         
@@ -111,16 +116,16 @@ class FlexibleTADADataProcessor:
 
     def get_data_collator(self):
         """
-        Creates a dynamic padding data collator.
+        Creates a dynamic padding data collator for batch preparation.
 
-        Args:
-            None
+        The returned collator pads each batch to the maximum sequence length
+        within that batch instead of padding the entire dataset, improving
+        memory efficiency during training. If the tokenizer does not define
+        a padding token, the EOS token is used as the padding token.
 
-        Inputs:
-            None
-
-        Outputs:
-            DataCollatorWithPadding: Data collator configured for dynamic padding.
+        Returns:
+            DataCollatorWithPadding: A HuggingFace data collator configured
+            for dynamic batch padding.
         """
         if self.tokenizer.pad_token is None:
             logger.warning("Pad token is not set. Using eos_token as pad_token.")
