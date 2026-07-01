@@ -7,21 +7,40 @@ logger = logging.getLogger(__name__)
 
 def build_compute_metrics_fn(task_name: str):
     """
-    A factory function that returns the appropriate compute_metrics function 
-    for the HuggingFace Trainer based on the specific GLUE/SuperGLUE task.
+    Creates a task-specific evaluation function for the HuggingFace Trainer.
+
+    This factory function returns a compute_metrics callback that automatically
+    selects the appropriate evaluation metrics based on the specified GLUE task.
+    It supports both classification and regression tasks, ensuring that each
+    benchmark is evaluated using its standard performance metrics.
 
     Args:
-        task_name (str): The name of the task (e.g., 'mnli', 'cola', 'cb').
+        task_name (str): Name of the GLUE task for which evaluation metrics
+            should be computed.
 
     Returns:
-        function: A compute_metrics function that takes an EvalPrediction object.
+        function: A compute_metrics function compatible with the HuggingFace
+        Trainer API.
     """
     task_name = task_name.lower()
     logger.info(f"Building metrics calculator for task: {task_name.upper()}")
 
     def compute_metrics(eval_pred):
         """
-        The actual evaluation logic called by Trainer at the end of each epoch/step.
+        Computes evaluation metrics for model predictions.
+
+        This function is invoked automatically by the HuggingFace Trainer
+        during evaluation. It processes the model predictions and ground-truth
+        labels, applies task-specific metric calculations, and returns the
+        resulting performance scores.
+
+        Args:
+            eval_pred: Tuple containing model predictions (logits) and
+                corresponding ground-truth labels.
+
+        Returns:
+            dict: Dictionary containing the evaluation metrics appropriate
+            for the selected GLUE task.
         """
         logits, labels = eval_pred
         
@@ -30,7 +49,6 @@ def build_compute_metrics_fn(task_name: str):
         if task_name == "stsb":
             predictions = np.squeeze(logits)
             
-            # Prevent division by zero or NaN issues in constant predictions
             try:
                 pearson_corr = pearsonr(predictions, labels)[0]
                 spearman_corr = spearmanr(predictions, labels)[0]
@@ -43,7 +61,6 @@ def build_compute_metrics_fn(task_name: str):
             }
         
         # 2. Handle Classification Tasks
-        # For classification, we take the argmax of logits to get the predicted class index.
         predictions = np.argmax(logits, axis=-1)
 
         # 3. Task-Specific Metric Routing
