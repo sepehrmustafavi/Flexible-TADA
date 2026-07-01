@@ -8,56 +8,50 @@ model:
 # Dataset Configuration
 dataset:
   benchmark: "glue"
-  # Tasks to be executed: mnli, sst2, mrpc, cola, qnli, qqp, rte, stsb
   tasks: ["mnli", "sst2", "mrpc", "cola", "qnli", "qqp", "rte", "stsb"]
   validation_split: "validation"
 
 # Training Hyperparameters for LLMs
 training:
   optimizer: "adamw"
-  lr_scheduler_type: "linear" # Cosine scheduler often works better for LLMs
+  lr_scheduler_type: "linear"
   warmup_ratio: 0.1
   weight_decay: 0.01
-  per_device_train_batch_size: 4 # Small batch size to manage VRAM on L40S
+  per_device_train_batch_size: 4
   per_device_eval_batch_size: 8
-  gradient_accumulation_steps: 4 # Effective batch size = 4 * 4 = 16
-  num_train_epochs: 5 # LLMs converge faster than smaller encoders
+  gradient_accumulation_steps: 4
+  num_train_epochs: 5
   logging_steps: 50
   evaluation_strategy: "epoch"
   eval_steps: 500
   save_strategy: "epoch"
   save_total_limit: 1
   load_best_model_at_end: true
-  gradient_checkpointing: true # CRITICAL: Enabled to prevent OOM during FFT on L40S
+  gradient_checkpointing: true
 
 # Method-Specific Configurations
 methods:
-  # Full Fine-Tuning (FFT)
   fft:
-    learning_rate: 1e-5 # Very low LR to prevent catastrophic forgetting in LLMs
+    learning_rate: 1e-5 
 
-  # Low-Rank Adaptation (LoRA)
   lora:
     learning_rate: 1e-4
-    r: 16 # Slightly higher rank for better representation in LLMs
+    r: 16
     lora_alpha: 32
-    target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"] # Standard LoRA targets for Qwen
+    target_modules: ["q_proj", "v_proj", "k_proj", "o_proj"]
     lora_dropout: 0.05
 
-  # Static TADA (Embedding tuning only)
   static_tada:
     learning_rate: 2e-4
     trainable_layers: ["model.embed_tokens"]
 
-  # Our Proposed Method: Flexible TADA
   flex_tada:
-    learning_rate: 3e-4 # Changed from 1e-4 to match the paper
-    # For Qwen2-1.5B (28 layers): Unfreeze Embedding + Last Layer (Layer 27)
+    learning_rate: 3e-4
     trainable_layers: ["model.embed_tokens", "model.layers.27"]
 
 # Hardware & Reporting
 system:
   seed: 42
-  fp16: False # Use half-precision for L40S optimization
+  fp16: False
   report_to: "tensorboard"
   save_final_model: false

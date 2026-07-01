@@ -34,7 +34,6 @@ methods:
     learning_rate: 4e-4
     r: 8
     lora_alpha: 16
-    # ⚠️ تفاوت مهم DeBERTa با بقیه مدل‌ها در این خط است:
     target_modules: ["query_proj", "value_proj"] 
     lora_dropout: 0.1
 
