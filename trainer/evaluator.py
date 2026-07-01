@@ -33,14 +33,13 @@ def run_evaluation(trainer, eval_dataset, task_name: str, method_name: str, outp
     _ = trainer.predict(warmup_subset)
 
     # Step 2: Measure Inference Time and Compute Standard Metrics
-    torch.cuda.synchronize() # Wait for all preceding CUDA commands to finish
+    torch.cuda.synchronize()
     start_time = time.time()
     
     # trainer.evaluate() automatically calls our custom compute_metrics_fn 
-    # (which we will define in utils/metrics.py)
     metrics = trainer.evaluate(eval_dataset=eval_dataset)
     
-    torch.cuda.synchronize() # Wait for evaluation to finish completely
+    torch.cuda.synchronize()
     end_time = time.time()
 
     # Step 3: Calculate Latency per Sample (Green AI Metric for Table 4)
