@@ -1,7 +1,6 @@
 import logging
 from datasets import load_dataset, DatasetDict
 
-# Set up logger
 logger = logging.getLogger(__name__)
 
 class FlexibleTADADatasetBuilder:
@@ -15,9 +14,17 @@ class FlexibleTADADatasetBuilder:
 
     def __init__(self, config: dict):
         """
+        Initializes the dataset builder.
+
         Args:
-            config (dict): A dictionary containing dataset configurations 
-                           (typically loaded from yaml files).
+            config (dict): Configuration dictionary containing benchmark,
+                task list, validation split, and system settings.
+
+        Inputs:
+            Configuration dictionary.
+
+        Outputs:
+            None
         """
         self.benchmark = config.get("benchmark", "glue").lower()
         self.tasks = config.get("tasks", [])
@@ -26,15 +33,18 @@ class FlexibleTADADatasetBuilder:
 
     def load_task(self, task_name: str, num_train_samples: int = None) -> DatasetDict:
         """
-        Loads a specific task from HuggingFace datasets and applies few-shot 
-        sub-sampling if num_train_samples is provided.
+        Loads a GLUE task and optionally applies few-shot sampling.
 
         Args:
-            task_name (str): Name of the task (e.g., 'mnli', 'boolq')
-            num_train_samples (int, optional): Number of samples to keep for training.
-            
-        Returns:
-            DatasetDict: A HuggingFace DatasetDict containing train and validation splits.
+            task_name (str): Name of the GLUE task.
+            num_train_samples (int, optional): Number of training samples
+                to retain for few-shot learning.
+
+        Inputs:
+            Task name and optional number of training samples.
+
+        Outputs:
+            DatasetDict: Dataset containing train and validation splits.
         """
         task_name = task_name.lower()
         
@@ -79,23 +89,29 @@ class FlexibleTADADatasetBuilder:
 
     def get_all_tasks(self, num_train_samples: int = None) -> dict:
         """
-        Loads all tasks defined in the configuration.
-        
-        Returns:
-            dict: A dictionary mapping task names to their respective DatasetDicts.
+        Loads all tasks specified in the configuration.
+
+        Args:
+            num_train_samples (int, optional): Number of training samples
+                to retain for each task.
+
+        Inputs:
+            Optional few-shot sample size.
+
+        Outputs:
+            dict: Dictionary mapping task names to DatasetDict objects.
         """
         all_datasets = {}
         for task in self.tasks:
             all_datasets[task] = self.load_task(task, num_train_samples=num_train_samples)
         return all_datasets
 
-# Example usage for debugging purposes
 if __name__ == "__main__":
     # Mock config
     test_config = {
         "benchmark": "glue",
         "tasks": ["rte"],
-        "seed": 2026 # One of our specific seeds for the few-shot robust test
+        "seed": 2026
     }
     
     builder = FlexibleTADADatasetBuilder(test_config)
