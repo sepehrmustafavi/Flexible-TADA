@@ -5,7 +5,6 @@ import torch
 import os
 from transformers import AutoTokenizer, set_seed
 
-# Import our custom modular components
 from utils.logger import setup_logger
 from data.dataset_builder import FlexibleTADADatasetBuilder
 from data.data_utils import FlexibleTADADataProcessor
@@ -17,7 +16,18 @@ from trainer.evaluator import run_evaluation
 logger = logging.getLogger(__name__)
 
 def parse_args():
-    """Parses command-line arguments to override YAML configurations dynamically."""
+    """
+    Parses command-line arguments for configuring the training pipeline.
+
+    This function defines the command-line interface for the Flexible TADA
+    framework, allowing users to specify the experiment configuration file,
+    fine-tuning method, target task, random seed, and optional Few-Shot
+    training settings that override the default YAML configuration.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments containing the
+        experiment configuration.
+    """
     parser = argparse.ArgumentParser(description="Flexible TADA Evaluation Pipeline")
     
     parser.add_argument("--config", type=str, required=True, 
@@ -35,6 +45,18 @@ def parse_args():
     return parser.parse_args()
 
 def main():
+    """
+    Executes the complete Flexible TADA training and evaluation pipeline.
+
+    This function loads the experiment configuration, prepares the dataset,
+    initializes the tokenizer and model, constructs the HuggingFace Trainer,
+    performs model training, and evaluates the trained model using both
+    performance and hardware efficiency metrics. The pipeline supports
+    multiple fine-tuning methods and optional Few-Shot learning scenarios.
+
+    Returns:
+        None
+    """
     # 1. Parse Arguments & Load Configuration
     args = parse_args()
     
@@ -51,7 +73,6 @@ def main():
     seed = config["system"].get("seed", 42)
     
     # 3. Setup Global Logger
-    # Creates a dedicated log file for this specific task and method
     log_dir = os.path.join("outputs", f"{task_name}_{args.method}_{seed}", "logs")
     setup_logger(output_dir=log_dir)
     logger.info("="*50)
@@ -84,12 +105,9 @@ def main():
     data_collator = data_processor.get_data_collator()
 
     # Determine number of labels for the classification head
-    # (HuggingFace datasets usually have a 'label' feature we can inspect)
-    # Determine number of labels for the classification head
     if task_name.lower() == "stsb":
         num_labels = 1  # Regression task
     elif "label" in raw_dataset["train"].features:
-        # Get the number of classes directly from the dataset features for classification tasks
         num_labels = raw_dataset["train"].features["label"].num_classes
     else:
         num_labels = 2  # Fallback default
