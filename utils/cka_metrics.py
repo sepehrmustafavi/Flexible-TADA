@@ -2,15 +2,23 @@ import torch
 
 def linear_cka(features_x: torch.Tensor, features_y: torch.Tensor) -> float:
     """
-    Calculates the Linear CKA (Centered Kernel Alignment) between two sets of representations.
-    This metric provides a robust measure of similarity between hidden layers.
-    
+    Computes the Linear Centered Kernel Alignment (CKA) similarity between
+    two sets of feature representations.
+
+    Linear CKA measures the similarity between hidden representations while
+    remaining invariant to isotropic scaling and orthogonal transformations.
+    It is commonly used to compare learned representations across different
+    neural network models or layers.
+
     Args:
-        features_x (torch.Tensor): Features from the first model, shape (batch_size, hidden_dim).
-        features_y (torch.Tensor): Features from the second model, shape (batch_size, hidden_dim).
-        
+        features_x (torch.Tensor): Feature representations from the first
+            model with shape (batch_size, hidden_dim).
+        features_y (torch.Tensor): Feature representations from the second
+            model with shape (batch_size, hidden_dim).
+
     Returns:
-        float: The CKA similarity score between 0.0 (completely orthogonal) and 1.0 (identical).
+        float: Linear CKA similarity score ranging from 0.0 (completely
+        dissimilar) to 1.0 (identical representations).
     """
     # Step 1: Center the features (mean subtraction across the batch dimension)
     x_centered = features_x - features_x.mean(dim=0, keepdim=True)
@@ -21,14 +29,12 @@ def linear_cka(features_x: torch.Tensor, features_y: torch.Tensor) -> float:
     dot_prod_y = torch.mm(y_centered, y_centered.t())
 
     # Step 3: Compute the Hilbert-Schmidt Independence Criterion (HSIC)
-    # This is efficiently calculated as the sum of the element-wise product
     hsic = torch.sum(dot_prod_x * dot_prod_y)
     
     # Step 4: Compute the normalization terms (Frobenius norms)
     norm_x = torch.sqrt(torch.sum(dot_prod_x * dot_prod_x))
     norm_y = torch.sqrt(torch.sum(dot_prod_y * dot_prod_y))
 
-    # Handle edge cases to prevent division by zero gracefully
     if norm_x == 0 or norm_y == 0:
         return 0.0
 
@@ -38,9 +44,24 @@ def linear_cka(features_x: torch.Tensor, features_y: torch.Tensor) -> float:
 
 def calculate_layerwise_cka(model_a, model_b, dataloader, device="cuda"):
     """
-    Extracts layer-wise CKA similarity between two models over a given dataset.
-    This is actively used to quantify "Representation Collapse" by comparing 
-    a baseline PEFT model to a Fully Fine-Tuned (FFT) reference model.
+    Computes layer-wise CKA similarity between two Transformer models.
+
+    This method extracts hidden representations from every Transformer layer
+    of both models and calculates the Linear CKA similarity using the [CLS]
+    token representation. The resulting scores quantify representation
+    similarity and are used to analyze representation collapse by comparing
+    parameter-efficient fine-tuning methods against a Fully Fine-Tuned
+    reference model.
+
+    Args:
+        model_a (torch.nn.Module): First Transformer model.
+        model_b (torch.nn.Module): Second Transformer model used as the
+            reference for comparison.
+        dataloader: DataLoader providing evaluation samples.
+        device (str): Device used for computation (e.g., "cuda" or "cpu").
+
+    Returns:
+        list: Average Linear CKA similarity score for each Transformer layer.
     """
     model_a.eval()
     model_b.eval()
