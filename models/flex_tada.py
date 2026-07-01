@@ -11,8 +11,7 @@ def apply_flexible_tada(model: torch.nn.Module, trainable_layers: list) -> torch
     if not trainable_layers:
         logger.warning("No trainable layers provided for Flexible TADA. The model will be completely frozen!")
 
-    # --- 🌟 NEW: Dynamic Last Layer Detection 🌟 ---
-    # Find out how many layers the model has to dynamically resolve "last_layer"
+    # Dynamic Last Layer Detection
     if "last_layer" in trainable_layers:
         trainable_layers.remove("last_layer")
         
@@ -35,7 +34,6 @@ def apply_flexible_tada(model: torch.nn.Module, trainable_layers: list) -> torch
             
         trainable_layers.append(dynamic_last_layer)
         logger.info(f"Dynamically resolved 'last_layer' to index {last_layer_idx} for {model_type} architecture.")
-    # -----------------------------------------------
 
     logger.info(f"Applying Flexible TADA. Target keywords to unfreeze: {trainable_layers}")
 
