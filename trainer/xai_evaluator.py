@@ -7,16 +7,54 @@ from captum.attr import LayerIntegratedGradients
 from utils.xai_metrics import calculate_faithfulness, calculate_sufficiency
 
 class XAIEvaluator:
+    """
+    Performs Explainable AI (XAI) analysis on trained Transformer models.
+
+    This class generates token-level explanations using Integrated Gradients,
+    computes explanation quality metrics such as Faithfulness and Sufficiency,
+    and visualizes token importance through attribution heatmaps for model
+    interpretability and semantic robustness analysis.
+    """
     def __init__(self, model, tokenizer, device="cuda"):
+        """
+        Initializes the XAI evaluator.
+
+        The evaluator stores the trained model, tokenizer, and computation device
+        required for generating token attributions and evaluating explanation
+        quality metrics.
+
+        Args:
+            model (torch.nn.Module): Fine-tuned Transformer model.
+            tokenizer: HuggingFace tokenizer corresponding to the model.
+            device (str): Device used for computation (e.g., "cuda" or "cpu").
+
+        Returns:
+            None
+        """
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
-        
-        # We will store the raw attributions of the last batch here 
-        # to generate accurate, gradient-based heatmaps.
         self.last_raw_attributions = None
 
     def run_analysis(self, test_dataloader, task_name: str, method_name: str, output_dir: str):
+        """
+        Performs semantic robustness analysis on a test dataset.
+
+        This method generates Integrated Gradients explanations for each batch,
+        computes Faithfulness and Sufficiency metrics, produces a token
+        attribution heatmap for the first processed sample, and returns the
+        average and standard deviation of the explanation quality metrics.
+
+        Args:
+            test_dataloader: DataLoader containing the evaluation dataset.
+            task_name (str): Name of the benchmark task being evaluated.
+            method_name (str): Name of the fine-tuning method.
+            output_dir (str): Directory for saving generated heatmaps.
+
+        Returns:
+            dict: Dictionary containing the mean and standard deviation of
+            Faithfulness and Sufficiency scores.
+        """
         print("🔍 Starting Semantic Robustness Analysis (XAI) using Integrated Gradients...")
         f_scores = []
         s_scores = []
@@ -32,7 +70,6 @@ class XAIEvaluator:
                 heatmap_generated = True
 
             # 3. Calculate Faithfulness and Sufficiency metrics
-            # These now return a list of scores for every sample in the current batch
             f_batch_scores = calculate_faithfulness(self.model, batch, important_indices, self.device)
             s_batch_scores = calculate_sufficiency(self.model, batch, important_indices, self.device)
             
@@ -49,18 +86,31 @@ class XAIEvaluator:
         }
 
     def generate_heatmap(self, batch, task_name, method_name, output_dir):
+        """
+        Generates a token attribution heatmap for a single input sample.
+
+        The heatmap visualizes the normalized Integrated Gradients attribution
+        scores assigned to each input token, providing an intuitive explanation
+        of the model's prediction.
+
+        Args:
+            batch (dict): Batch containing tokenized input data.
+            task_name (str): Name of the benchmark task.
+            method_name (str): Name of the fine-tuning method.
+            output_dir (str): Directory where the heatmap image is saved.
+
+        Returns:
+            None
+        """
         os.makedirs(output_dir, exist_ok=True)
         
-        # Extract the sequence length and tokens for the first sample in the batch
         input_ids = batch["input_ids"][0]
         actual_len = batch["attention_mask"][0].sum().item()
         
         tokens = self.tokenizer.convert_ids_to_tokens(input_ids[:actual_len])
         
-        # Retrieve the raw attribution scores calculated by Captum
         importance_scores = self.last_raw_attributions[0][:actual_len]
         
-        # Normalize scores to [-1, 1] for optimal visualization with diverging colormap
         max_abs = np.max(np.abs(importance_scores))
         if max_abs > 0:
             importance_scores = importance_scores / max_abs
@@ -68,7 +118,6 @@ class XAIEvaluator:
         # Graphical Setting
         plt.figure(figsize=(14, 2))
         
-        # Using 'coolwarm' cmap: Red for positive impact, Blue for negative impact, White for neutral
         sns.heatmap([importance_scores], annot=[tokens], fmt="", cmap="coolwarm", 
                     vmin=-1, vmax=1, center=0, cbar=False, 
                     xticklabels=False, yticklabels=False, annot_kws={"size": 10})
@@ -82,8 +131,20 @@ class XAIEvaluator:
 
     def get_important_tokens(self, batch):
         """
-        Extracts indices of important tokens using Captum's LayerIntegratedGradients.
-        This provides a mathematically rigorous attribution map instead of random selection.
+        Identifies the most influential input tokens using Integrated Gradients.
+
+        This method computes token-level attribution scores with Captum's
+        LayerIntegratedGradients, filters out special tokens, and selects the
+        top 20% most influential tokens based on attribution magnitude. The
+        resulting token indices are used for evaluating explanation quality
+        and generating attribution heatmaps.
+
+        Args:
+            batch (dict): Batch containing tokenized inputs and attention masks.
+
+        Returns:
+            list: A list containing the indices of the most important tokens
+            for each sample in the batch.
         """
         self.model.eval()
         input_ids = batch["input_ids"].to(self.device)
@@ -99,11 +160,9 @@ class XAIEvaluator:
             predicted_classes = outputs.logits.argmax(dim=-1)
 
         # Step 2: Setup Captum LayerIntegratedGradients
-        # We wrap the model's forward pass to strictly take input_ids
         def custom_forward(inputs, mask):
             return self.model(input_ids=inputs, attention_mask=mask).logits
 
-        # Attach the hook to the model's embedding layer
         embedding_layer = self.model.get_input_embeddings()
         lig = LayerIntegratedGradients(custom_forward, embedding_layer)
 
@@ -124,7 +183,6 @@ class XAIEvaluator:
             baseline_ids = torch.full_like(single_input_ids, self.tokenizer.pad_token_id)
 
             # Step 4: Calculate Attributions
-            # We enable gradients strictly for the IG computation
             with torch.enable_grad():
                 attributions = lig.attribute(
                     inputs=single_input_ids,
@@ -136,15 +194,14 @@ class XAIEvaluator:
                 )
 
             # Step 5: Summarize attributions across the embedding dimension
-            # We sum across the hidden dim to get a single score per token
             token_attributions = attributions.sum(dim=-1).squeeze(0)
             
             # Step 6: Filter out special tokens from being selected in the rationale
             token_attributions_abs = token_attributions.abs().clone()
-            token_attributions_abs[0] = 0.0 # Ignore [CLS] / <s>
-            token_attributions_abs[actual_len - 1] = 0.0 # Ignore [SEP] / </s>
+            token_attributions_abs[0] = 0.0
+            token_attributions_abs[actual_len - 1] = 0.0
             if actual_len < seq_len:
-                token_attributions_abs[actual_len:] = 0.0 # Ignore [PAD]
+                token_attributions_abs[actual_len:] = 0.0
 
             # Step 7: Select top 20% most important tokens based on absolute attribution magnitude
             num_to_select = max(1, int((actual_len - 2) * 0.2))
@@ -153,7 +210,6 @@ class XAIEvaluator:
             important_indices.append(top_indices.cpu().tolist())
             raw_attributions_list.append(token_attributions.detach().cpu().numpy())
 
-        # Cache the raw attributions for potential heatmap generation
         self.last_raw_attributions = raw_attributions_list
         
         return important_indices
