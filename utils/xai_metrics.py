@@ -1,13 +1,23 @@
 import torch
 
-# ==============================================================================
-# XAI Classification Metrics (For SST-2, MNLI, MRPC, QQP, QNLI, RTE, CoLA)
-# ==============================================================================
-
 def calculate_faithfulness(model, batch, important_indices, device):
     """
-    Faithfulness (Infidelity): Measures if removing important words 
-    leads to a significant drop in the correct class probability.
+    Computes the Faithfulness score for token-level explanations.
+
+    Faithfulness measures how much the model's confidence decreases after
+    removing the tokens identified as important by an explanation method.
+    Higher scores indicate that the selected tokens have a greater influence
+    on the model's prediction.
+
+    Args:
+        model (torch.nn.Module): Trained Transformer model.
+        batch (dict): Batch containing tokenized inputs and attention masks.
+        important_indices (list): List of important token indices for each
+            sample in the batch.
+        device: Target computation device (e.g., "cuda" or "cpu").
+
+    Returns:
+        list: Faithfulness scores for all samples in the evaluated batch.
     """
     model.eval()
     with torch.no_grad():
@@ -30,7 +40,7 @@ def calculate_faithfulness(model, batch, important_indices, device):
         masked_outputs = model(input_ids.to(device), attention_mask=attention_mask.to(device))
         masked_probs = torch.softmax(masked_outputs.logits, dim=-1)
         
-        # Look at the probability of the *original* predicted class
+        # Look at the probability of the original predicted class
         masked_prob_for_class = torch.gather(masked_probs, 1, predicted_class.unsqueeze(-1))
 
     # Calculate scores for ALL samples in the batch (returning a list instead of mean)
@@ -40,8 +50,22 @@ def calculate_faithfulness(model, batch, important_indices, device):
 
 def calculate_sufficiency(model, batch, important_indices, device):
     """
-    Sufficiency: Measures if the important words ALONE are enough 
-    for the model to make the correct prediction.
+    Computes the Sufficiency score for token-level explanations.
+
+    Sufficiency measures whether the tokens identified as important are
+    sufficient for the model to preserve its original prediction when all
+    other input tokens are removed. Higher scores indicate that the selected
+    tokens capture most of the information required for the prediction.
+
+    Args:
+        model (torch.nn.Module): Trained Transformer model.
+        batch (dict): Batch containing tokenized inputs and attention masks.
+        important_indices (list): List of important token indices for each
+            sample in the batch.
+        device: Target computation device (e.g., "cuda" or "cpu").
+
+    Returns:
+        list: Sufficiency scores for all samples in the evaluated batch.
     """
     model.eval()
     with torch.no_grad():
@@ -62,7 +86,6 @@ def calculate_sufficiency(model, batch, important_indices, device):
         outputs = model(input_ids.to(device), attention_mask=attention_mask.to(device))
         probs = torch.softmax(outputs.logits, dim=-1)
         
-        # We MUST evaluate the confidence on the ORIGINAL predicted class
         masked_prob_for_class = torch.gather(probs, 1, predicted_class.unsqueeze(-1))
         
     # Calculate scores for ALL samples in the batch (returning a list instead of mean)
