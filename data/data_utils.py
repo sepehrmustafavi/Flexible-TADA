@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 # Mapping each task to its respective text column names in the HuggingFace dataset
 TASK_TO_KEYS = {
-    # GLUE Tasks
     "cola": ("sentence", None),
     "mnli": ("premise", "hypothesis"),
     "mrpc": ("sentence1", "sentence2"),
@@ -18,15 +17,46 @@ TASK_TO_KEYS = {
 
 class FlexibleTADADataProcessor:
     """
-    Handles tokenization, dynamic padding, and tensor formatting for 
-    Encoder-based pipelines (BERT, RoBERTa, DeBERTa, ELECTRA).
+    Handles dataset preprocessing for encoder-based transformer models.
+
+    Responsibilities:
+    - Tokenize input text.
+    - Apply sequence truncation.
+    - Preserve labels for training.
+    - Dynamically pad batches during data loading.
     """
 
     def __init__(self, tokenizer, max_seq_length: int = 128):
+        """
+        Initializes the data processor.
+
+        Args:
+            tokenizer: HuggingFace tokenizer used for tokenization.
+            max_seq_length (int): Maximum sequence length after tokenization.
+
+        Inputs:
+            tokenizer, max_seq_length
+
+        Outputs:
+            None
+        """
         self.tokenizer = tokenizer
         self.max_seq_length = max_seq_length
 
     def preprocess_function(self, examples, task_name: str):
+        """
+        Tokenizes dataset examples for a specified GLUE task.
+
+        Args:
+            examples (dict): Batch of dataset examples.
+            task_name (str): Name of the GLUE task.
+
+        Inputs:
+            Dataset examples and task name.
+
+        Outputs:
+            dict: Tokenized inputs with labels (if available).
+        """
         task_name = task_name.lower()
         if task_name not in TASK_TO_KEYS:
             raise ValueError(f"Unrecognized task name: {task_name}")
@@ -53,6 +83,19 @@ class FlexibleTADADataProcessor:
         return tokenized_inputs
 
     def prepare_dataset(self, dataset_dict, task_name: str):
+        """
+        Applies tokenization to all splits in the dataset.
+
+        Args:
+            dataset_dict (DatasetDict): Dataset containing train/validation/test splits.
+            task_name (str): Name of the GLUE task.
+
+        Inputs:
+            DatasetDict and task name.
+
+        Outputs:
+            DatasetDict: Tokenized dataset.
+        """
         logger.info(f"Tokenizing dataset for task: {task_name}...")
         
         column_names = dataset_dict["train"].column_names
@@ -67,6 +110,18 @@ class FlexibleTADADataProcessor:
         return tokenized_datasets
 
     def get_data_collator(self):
+        """
+        Creates a dynamic padding data collator.
+
+        Args:
+            None
+
+        Inputs:
+            None
+
+        Outputs:
+            DataCollatorWithPadding: Data collator configured for dynamic padding.
+        """
         if self.tokenizer.pad_token is None:
             logger.warning("Pad token is not set. Using eos_token as pad_token.")
             self.tokenizer.pad_token = self.tokenizer.eos_token
