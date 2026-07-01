@@ -6,6 +6,12 @@
 # It runs experiments with limited training samples (10, 50, 100)
 # across multiple random seeds to ensure statistical significance.
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
+
 # 1. Configuration
 CONFIG="configs/roberta_glue.yaml"
 METHODS=("fft" "static_tada" "lora" "flex_tada")

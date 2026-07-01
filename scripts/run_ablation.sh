@@ -6,6 +6,12 @@
 # It dynamically modifies the YAML config to unfreeze different transformer layers
 # and tracks how the representation depth affects the task performance.
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
+
 CONFIG="configs/roberta_glue.yaml"
 TASK="sst2"     # We use SST-2 because it's fast and sensitive to semantic changes
 METHOD="flex_tada"

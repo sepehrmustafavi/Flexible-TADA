@@ -2,6 +2,12 @@
 
 # scripts/run_glue.sh
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
+
 # 1. Configuration Array (All 4 models)
 CONFIGS=(
     "configs/roberta_glue.yaml"

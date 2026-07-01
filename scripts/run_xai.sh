@@ -2,6 +2,12 @@
 
 # scripts/run_xai.sh
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
+
 CONFIG="configs/roberta_glue.yaml"
 TASKS=("sst2" "mrpc")
 METHODS=("fft" "static_tada" "lora" "flex_tada")

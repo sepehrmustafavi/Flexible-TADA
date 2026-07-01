@@ -3,6 +3,12 @@
 # scripts/run_validity_analysis.sh
 # Architectural Boundaries Experiment: Model Depth vs. Causal Masking
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
+
 TASKS=("sst2" "qnli")
 
 CONFIGS=(

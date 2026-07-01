@@ -3,6 +3,11 @@
 # scripts/run_stacked_heatmap.sh
 # Bash wrapper for generating stacked XAI heatmaps for the journal paper
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
 
 echo "================================================================"
 echo "🎨 Starting Stacked Heatmap Generation via Python Engine..."

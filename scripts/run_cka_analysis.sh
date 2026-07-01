@@ -3,6 +3,11 @@
 # scripts/run_cka_analysis.sh
 # Bash wrapper for Representation Collapse Analysis (CKA)
 
+# Change to project root directory
+cd "$(dirname "$0")/.." || exit 1
+
+# Set device
+export CUDA_VISIBLE_DEVICES=0
 
 echo "================================================================"
 echo "🧠 Starting Representation Analysis (CKA) via Python Engine..."
