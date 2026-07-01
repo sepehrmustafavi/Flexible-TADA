@@ -10,6 +10,17 @@ from data.data_utils import FlexibleTADADataProcessor
 import yaml
 
 def main():
+    """
+    Performs Explainable AI (XAI) evaluation for a trained Transformer model.
+
+    This script loads a trained model and its corresponding validation dataset,
+    generates token-level explanations using Integrated Gradients, computes
+    explanation quality metrics including Faithfulness and Sufficiency, and
+    saves the evaluation results for subsequent analysis.
+
+    Returns:
+        None
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, required=True)
     parser.add_argument("--task", type=str, required=True)
